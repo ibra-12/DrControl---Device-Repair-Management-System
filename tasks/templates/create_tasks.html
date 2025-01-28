@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<main class="container">
+    <div class="row">
+        <div class="col-md-4 offset-md-4 mt-5">
+            <!-- Ajusta la URL a la que apunta el formulario -->
+            <form action="{% url 'create_tasks' %}" method="POST" class="card card-body">
+                <h1>Create Task</h1>
+                
+                <!-- Muestra errores (si los estás pasando con contexto o messages) -->
+                {% if error %}
+                    <div class="alert alert-danger">
+                        {{ error }}
+                    </div>
+                {% endif %}
+                
+                {% csrf_token %}
+                {{ form }}
+                
+                <button class="btn btn-dark mt-3" type="submit">
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock %}

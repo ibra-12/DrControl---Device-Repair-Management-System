@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Manejo de dispositivos</h1>
+    <div class="d-flex flex-column align-items-center mt-5">
+        <a href="{% url 'register_device' %}" class="btn btn-dark mb-3" style="width: 200px;">
+            Registrar dispositivos
+        </a>
+        <a href="{% url 'repair_queue' %}" class="btn btn-dark mb-3" style="width: 200px;">
+            Cola de reparación
+        </a>
+        <a href="{% url 'devices_in_progress' %}" class="btn btn-dark mb-3" style="width: 200px;">
+            Dispositivos en reparación
+        </a>
+        <a href="{% url 'devices_ready' %}" class="btn btn-dark mb-3" style="width: 200px;">
+            Dispositivos listos
+        </a>
+        <a href="{% url 'devices_delivered' %}" class="btn btn-dark mb-3" style="width: 200px;">
+            Dispositivos recogidos
+        </a>
+    </div>
+</div>
+{% endblock %}

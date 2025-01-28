@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dr. Control - Estado de Dispositivo</title>
+  <!-- Ajuste para que sea responsivo en móviles -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Incluye Bootstrap 5 CSS si gustas -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* Ajustes simples para centrar el contenido */
+    .public-container {
+      max-width: 400px;
+      margin: 1rem auto;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 1rem;
+    }
+    .status-label {
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-align: center;
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+<div class="public-container">
+    <h3 class="text-center">Dr. Control</h3>
+    <hr>
+    <div class="mb-3">
+        <label class="fw-bold">Nombre del cliente:</label>
+        <div>{{ device.customer.name }}</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Teléfono:</label>
+        <div>{{ device.customer.phone }}</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Tipo de dispositivo:</label>
+        <div>{{ device.device_type }}</div>
+    </div>
+
+    <div class="mb-3">
+        <label class="fw-bold">Problema:</label>
+        <div>{{ device.issue }}</div>
+    </div>
+
+    <div class="status-label">
+      Estado:
+      <span class="badge bg-primary">
+        {{ device.get_status_display }}
+      </span>
+    </div>
+
+    {# Opcional: mostrar datos de la reparación final #}
+    {% if repair_history %}
+      {% if repair_history.final_payment_amount %}
+        <p class="mt-3">
+          <strong>Total Pagado:</strong> ${{ repair_history.final_payment_amount }}
+        </p>
+      {% endif %}
+      {% if repair_history.payment_method %}
+        <p><strong>Método de pago:</strong> 
+            {% if repair_history.payment_method == 'CASH' %}
+              Efectivo
+            {% else %}
+              Tarjeta
+            {% endif %}
+        </p>
+      {% endif %}
+      {% if repair_history.delivery_date %}
+        <p><strong>Fecha de entrega:</strong> {{ repair_history.delivery_date|date:"Y-m-d H:i" }}</p>
+      {% endif %}
+    {% endif %}
+
+    <hr>
+    <p class="text-center text-muted" style="font-size:0.9rem;">
+      Consulta actualizada. 
+      <br>Si requieres más información, comunícate con nosotros.
+    </p>
+</div>
+
+<!-- Bootstrap JS (solo si quieres popups, modals, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

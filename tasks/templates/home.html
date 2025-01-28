@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="container py-5">
+    <!-- Imagen del negocio -->
+    <div class="text-center mb-4">
+        <img src="{% static 'images/DrControlSinFondo.png' %}" alt="Dr Control Logo" class="img-fluid" style="max-width: 1000px;">
+    </div>
+
+    <!-- Título y descripción -->
+    <section class="card card-body mb-4">
+        <h1 class="display-1 text-center">Dr. Control 👨‍⚕️🎮</h1>
+        <p class="text-center">
+            Somos un taller especializado en la reparación de controles y consolas de videojuegos.
+            Nuestro objetivo es devolver la diversión y el rendimiento a tus dispositivos favoritos,
+            ofreciendo un servicio rápido, confiable y de alta calidad.
+        </p>
+    </section>
+
+    <!-- Quienes somos, qué hacemos, dónde estamos -->
+    <section class="card card-body mb-4">
+        <h2 class="text-center">¿Quiénes somos?</h2>
+        <p class="text-center">
+            En Dr Control, nos dedicamos exclusivamente a la reparación de controles de videojuegos y consolas.
+            Con años de experiencia en el sector, hemos desarrollado una reputación basada en nuestra 
+            atención al detalle y compromiso con la satisfacción del cliente.
+        </p>
+
+        <h2 class="text-center mt-4">¿Qué hacemos?</h2>
+        <p class="text-center">
+            Diagnósticos precisos, reparaciones de alta calidad y mantenimientos preventivos para tus controles 
+            y consolas favoritas. Ya sea un joystick descompuesto, botones dañados o un problema eléctrico, ¡lo solucionamos!
+        </p>
+
+        <h2 class="text-center mt-4">¿Dónde estamos?</h2>
+        <p class="text-center">
+            Visítanos en nuestra ubicación física para más detalles sobre nuestros servicios:
+        </p>
+        <div class="text-center">
+            <a href="https://maps.app.goo.gl/7CyVopukxvsq7LLC6" class="btn btn-dark" target="_blank">
+                Ver en Google Maps
+            </a>
+        </div>
+    </section>
+
+    <!-- Horarios -->
+    <section class="card card-body mb-4">
+        <h2 class="text-center">Horarios</h2>
+        <ul class="list-group list-group-flush text-center">
+            <li class="list-group-item">Jueves: 3:00 PM - 6:00 PM</li>
+            <li class="list-group-item">Viernes: 3:00 PM - 6:00 PM</li>
+            <li class="list-group-item">Sábado: 10:00 AM - 5:00 PM</li>
+            <li class="list-group-item text-danger">Otros días: CERRADO</li>
+        </ul>
+    </section>
+
+    <!-- Contacto por WhatsApp -->
+    <section class="card card-body text-center">
+        <h2>¡Contáctanos!</h2>
+        <p>
+            Si tienes dudas, necesitas un diagnóstico o quieres agendar una reparación, 
+            escríbenos por WhatsApp. ¡Estaremos encantados de ayudarte!
+        </p>
+        <a href="https://wa.me/5216442213903" class="btn btn-success" target="_blank">
+            Enviar Mensaje por WhatsApp
+        </a>
+    </section>
+</main>
+{% endblock %}

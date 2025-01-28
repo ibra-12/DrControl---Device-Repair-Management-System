@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Comprobante Dr. Control 👨‍⚕️🎮</h2>
+    <h5>Folio de reparación: {{ repair_history.folio }}</h5>
+
+    <div class="row">
+        <!-- Columna izquierda: Tabla -->
+        <div class="col-md-8">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Nombre del cliente</th>
+                        <td>{{ device.customer.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Teléfono</th>
+                        <td>{{ device.customer.phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Tipo de dispositivo</th>
+                        <td>{{ device.device_type }}</td>
+                    </tr>
+                    <tr>
+                        <th>Problema</th>
+                        <td>{{ device.issue }}</td>
+                    </tr>
+                    <tr>
+                        <th>Comentarios</th>
+                        <td>{{ device.comments }}</td>
+                    </tr>
+                    <tr>
+                        <th>Cotización</th>
+                        <td>{{ device.quote }}</td>
+                    </tr>
+                    <tr>
+                        <th>Anticipo</th>
+                        <td>{{ device.advance_payment }}</td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de recibido</th>
+                        <td>{{ device.created_at }}</td>
+                    </tr>
+                    <tr>
+                        <th>Estado</th>
+                        <td>{{ device.get_status_display }}</td>
+                    </tr>
+                    {% if device.status == 'READY' or device.status == 'DELIVERED' %}
+                    <tr>
+                        <th>Costo final</th>
+                        <td>
+                            {% if total_cost %}
+                                ${{ total_cost }}
+                            {% else %}
+                                <span class="text-muted">Ningún costo registrado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Total a pagar</th>
+                        <td>
+                            {% if total_to_pay %}
+                                ${{ total_to_pay }}
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% if device.status == 'DELIVERED' and repair_history %}
+                    <tr>
+                        <th>Total pagado</th>
+                        <td>
+                            {% if repair_history.final_payment_amount %}
+                                ${{ repair_history.final_payment_amount }}
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Método de pago</th>
+                        <td>
+                            {% if repair_history.payment_method == 'CASH' %}
+                                Efectivo
+                            {% elif repair_history.payment_method == 'CARD' %}
+                                Tarjeta
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Fecha de entrega</th>
+                        <td>
+                            {% if repair_history.delivery_date %}
+                                {{ repair_history.delivery_date }}
+                            {% else %}
+                                <span class="text-muted">N/A</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Columna derecha: QR -->
+        <div class="col-md-4 text-center">
+            <h4>Código QR</h4>
+            <img src="{{ qr_url }}" alt="Código QR del dispositivo" class="img-fluid">
+            <p class="mt-3">
+                Escanea este código para consultar el estado del dispositivo.
+            </p>
+        </div>
+    </div>
+
+    <div class="mb-3 mt-4">
+        <a href="{% url 'repair_queue' %}" class="btn btn-secondary">cola de reparación</a>
+        <a href="{% url 'devices_in_progress' %}" class="btn btn-secondary">dispositivos en reparación</a>
+        <a href="{% url 'devices_ready' %}" class="btn btn-secondary">dispositivos listos</a>
+        <a href="{% url 'devices_delivered' %}" class="btn btn-secondary">dispositivos entregados</a>        
+    </div>
+
+    {% if flow_info and flow_info.next_state %}
+        {% if device.status == 'READY' and flow_info.next_state == 'DELIVERED' %}
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deliverModal">
+                {{ flow_info.btn_text }}
+            </button>
+        {% elif device.status == 'IN_PROGRESS' and flow_info.next_state == 'READY' %}
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning">
+                    {{ flow_info.btn_text }}
+                </button>
+            </form>
+        {% else %}
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-warning">
+                    {{ flow_info.btn_text }}
+                </button>
+            </form>
+        {% endif %}
+    {% else %}
+        <p class="text-success">No es posible cambiar de estado ({{ device.status }}).</p>
+    {% endif %}
+    {% if device.status == 'QUEUE' or device.status == 'IN_PROGRESS' %}
+  <a href="{% url 'edit_device' device.id %}" class="btn btn-info mb-3">
+    Editar
+  </a>
+{% endif %}
+</div>
+
+<div class="modal fade" id="deliverModal" tabindex="-1" aria-labelledby="deliverModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deliverModalLabel">Finalizar el pago</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="finalPaymentAmount" class="form-label">Total Pagado:</label>
+                        <input type="number" step="0.01" class="form-control" id="finalPaymentAmount" name="final_payment_amount" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="paymentMethod" class="form-label">Método de pago:</label>
+                        <select name="payment_method" id="paymentMethod" class="form-select" required>
+                            <option value="CASH">Efectivo</option>
+                            <option value="CARD">Tarjeta</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" name="deliver" class="btn btn-primary">Entregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

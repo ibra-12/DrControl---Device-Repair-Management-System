@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Dispositivos de {{ customer.name }}</h2>
+
+    {% if devices %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo de dispositivo</th>
+                    <th>Problema</th>
+                    <th>Estado</th>
+                    <th>Fecha de registro</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <!-- Agregamos un enlace al detalle del dispositivo -->
+                    <td>
+                        <a href="{% url 'device_detail' device.id %}">
+                            {{ device.id }}
+                        </a>
+                    </td>
+                    <td>{{ device.device_type }}</td>
+                    <td>{{ device.issue }}</td>
+                    <td>{{ device.get_status_display }}</td>
+                    <td>{{ device.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay dispositivos registrados para este cliente.</p>
+    {% endif %}
+
+    <a href="{% url 'customers_list' %}" class="btn btn-secondary">Regresar a la lista de clientes</a>
+</div>
+{% endblock %}

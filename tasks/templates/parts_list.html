@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Refacciones</h1>
+    
+    <!-- Barra de búsqueda "en vivo" -->
+    <div class="mb-3" style="max-width: 300px;">
+        <label for="searchInput" class="form-label">Buscar refacción:</label>
+        <input 
+            type="text" 
+            id="searchInput" 
+            class="form-control" 
+            placeholder="Escribe para filtrar..."
+        >
+    </div>
+
+    <!-- Botón Agregar Refacción -->
+    <div class="mb-3">
+        <a href="{% url 'add_part' %}" class="btn btn-success">Agregar Refacción</a>
+    </div>
+
+    <!-- Tabla de Refacciones -->
+    <table class="table table-striped table-hover" id="partsTable">
+        <thead>
+            <tr>
+                <th>Imagen</th>
+                <th class="text-nowrap">Nombre</th>
+                <th>Stock</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for part in parts %}
+            <tr>
+                <td>
+                    {% if part.image %}
+                        <img 
+                            src="{{ part.image.url }}" 
+                            alt="{{ part.name }}" 
+                            style="width: 70px; height: auto;"
+                        >
+                    {% else %}
+                        <span class="text-muted">Sin imagen</span>
+                    {% endif %}
+                </td>
+                <!-- Importante: una clase "td-part-name" para facilitar el filtro JS -->
+                <td class="td-part-name">{{ part.name }}</td>
+                <td>{{ part.stock }}</td>
+                <td>{{ part.description|truncatewords:20 }}</td>
+                <td>
+                    <a href="{% url 'edit_part' part.id %}" class="btn btn-primary btn-sm">Editar</a>
+                    <a href="{% url 'delete_part' part.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No hay refacciones registradas.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- JS para filtrar en vivo -->
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const table = document.getElementById('partsTable');
+  const tableRows = table.getElementsByTagName('tr'); // filas del tbody
+
+  searchInput.addEventListener('keyup', function() {
+    const filter = searchInput.value.toLowerCase();
+
+    // Recorremos las filas de la tabla, ignorando el <thead>
+    for (let i = 1; i < tableRows.length; i++) {
+      let row = tableRows[i];
+      // Obtenemos la celda con la clase "td-part-name"
+      let nameCell = row.querySelector('.td-part-name');
+      if (!nameCell) continue;
+      let partName = nameCell.textContent.toLowerCase();
+
+      if (partName.indexOf(filter) > -1) {
+        // Coincide la búsqueda
+        row.style.display = '';
+      } else {
+        // No coincide
+        row.style.display = 'none';
+      }
+    }
+  });
+</script>
+{% endblock %}

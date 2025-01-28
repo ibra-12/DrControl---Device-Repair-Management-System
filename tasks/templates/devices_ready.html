@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Dispositivos listos para recoger</h2>
+    
+    {% if devices_ready %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tipo de dispositivo</th>
+                    <th>Cliente</th>
+                    <th>Problema</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices_ready %}
+                <tr>
+                    <td>{{ device.id }}</td>
+                    <td>
+                        <a href="{% url 'device_detail' device.id %}"
+                           class="text-decoration-none text-body">
+                            {{ device.device_type }}
+                        </a>
+                    </td>
+                    <td>{{ device.customer.name }}</td>
+                    <td>{{ device.issue|truncatewords:10 }}</td>
+                    <td>{{ device.get_status_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay dispositivos listos para recoger en este momento.</p>
+    {% endif %}
+    <div class="mb-3">
+        <a href="{% url 'repair_queue' %}" class="btn btn-secondary">ir a la cola de reparación</a>
+        <a href="{% url 'devices_in_progress' %}" class="btn btn-secondary">ir a dispositivos en reparación</a>
+        <a href="{% url 'devices_ready' %}" class="btn btn-secondary">ir a dispositivos listos</a>
+        <a href="{% url 'devices_delivered' %}" class="btn btn-secondary">ir a dispositivos entregados</a>
+    </div>
+</div>
+{% endblock %}

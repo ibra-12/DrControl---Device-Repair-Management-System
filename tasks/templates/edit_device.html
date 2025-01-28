@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Editar Dispositivo</h1>
+    <hr>
+    <form method="POST" class="card card-body">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+            <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}:</label>
+            {{ form.phone }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label>
+            {{ form.name }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.device_type.id_for_label }}">Tipo de dispositivo:</label>
+            {{ form.device_type }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.issue.id_for_label }}">Problema:</label>
+            {{ form.issue }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.comments.id_for_label }}">Comentarios:</label>
+            {{ form.comments }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.quote.id_for_label }}">Cotización:</label>
+            {{ form.quote }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.advance_payment.id_for_label }}">Anticipo:</label>
+            {{ form.advance_payment }}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.status.id_for_label }}">Estado:</label>
+            {{ form.status }}
+        </div>
+
+        <button type="submit" class="btn btn-dark">Guardar cambios</button>
+        <a href="{% url 'device_detail' device.id %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+<script>
+  // Opcional: la misma lógica AJAX para phone -> name
+  // Si lo deseas, puedes volver a poner el "blur" en el phone
+  // para autocompletar el name, igual que en "register_device.html".
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Add Used Parts for Repair {{ repair.id }}</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Part</button>
+</form>
+<a href="{% url 'repair_detail' repair.id %}" class="btn btn-secondary">Back</a>
+{% endblock %}

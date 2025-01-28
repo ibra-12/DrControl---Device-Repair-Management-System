@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Clientes</h1>
+
+    <div class="mb-3" style="max-width: 300px;">
+        <label for="searchInput" class="form-label">Buscar cliente:</label>
+        <input 
+            type="text"
+            id="searchInput"
+            class="form-control"
+            placeholder="Escribe para filtrar..."
+        >
+    </div>
+
+    <div class="mb-3">
+        <a href="{% url 'add_customer' %}" class="btn btn-success">Agregar Cliente</a>
+    </div>
+
+    <table class="table table-striped" id="customersTable">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cust in customers %}
+            <tr>
+              <td class="td-customer-name">
+                <a href="{% url 'customer_devices' cust.id %}" class="text-decoration-none">
+                    {{ cust.name }}
+                </a>
+            </td>
+                <td class="td-customer-phone">{{ cust.phone }}</td>
+                <td>
+                    <a href="{% url 'edit_customer' cust.id %}" class="btn btn-primary btn-sm">Editar</a>
+                    <a href="{% url 'delete_customer' cust.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No hay clientes registrados.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const table = document.getElementById('customersTable');
+  const tableRows = table.getElementsByTagName('tr');
+
+  searchInput.addEventListener('keyup', function() {
+    const filter = searchInput.value.toLowerCase();
+
+    for (let i = 1; i < tableRows.length; i++) {
+      let row = tableRows[i];
+      let nameCell = row.querySelector('.td-customer-name');
+      let phoneCell = row.querySelector('.td-customer-phone');
+      if (!nameCell || !phoneCell) continue;
+
+      let nameText = nameCell.textContent.toLowerCase();
+      let phoneText = phoneCell.textContent.toLowerCase();
+
+      if (nameText.includes(filter) || phoneText.includes(filter)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    }
+  });
+</script>
+{% endblock %}

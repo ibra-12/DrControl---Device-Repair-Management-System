@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Resumen de reparación para: {{ device.device_type }} (ID: {{ device.id }})</h2>
+    <p>Cliente: {{ device.customer.name }} — Phone: {{ device.customer.phone }}</p>
+    
+    <hr>
+    <h4>Refacciones Usadas:</h4>
+    {% if used_parts %}
+        <ul class="list-group">
+            {% for up in used_parts %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <strong>{{ up.part.name }}</strong>
+                <span class="badge bg-primary rounded-pill">
+                    {{ up.quantity }} used
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No se usaron refacciones (o no se registraron).</p>
+    {% endif %}
+
+    <div class="mt-4">
+        <h5>Costo Final: ${{ total_cost }}</h5>
+        <h5>Anticipo: ${{ device.advance_payment }}</h5>
+        <h4>Total a Pagar: ${{ total_to_pay }}</h4>
+    </div>
+
+    <div class="mt-3">
+        <a href="{% url 'devices_ready' %}" class="btn btn-secondary">
+            Regresar a la lista de listos
+        </a>
+    </div>
+</div>
+{% endblock %}
